@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HedgeLuck 認証管理</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
+
+  :root {
+    --bg:        #080c10;
+    --bg2:       #0d1117;
+    --bg3:       #111820;
+    --border:    #1e3a2a;
+    --border2:   #2a5a3a;
+    --green:     #00ff88;
+    --green2:    #00cc66;
+    --green3:    #004422;
+    --red:       #ff4466;
+    --red2:      #440011;
+    --amber:     #ffaa00;
+    --amber2:    #442200;
+    --text:      #c8e6c9;
+    --text2:     #4a7a5a;
+    --text3:     #2a4a3a;
+    --font-mono: 'Share Tech Mono', monospace;
+    --font-main: 'Rajdhani', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    min-height: 100vh;
+    padding: 24px 16px;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(0,255,136,0.03) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(0,255,136,0.03) 40px);
+  }
+
+  /* ── ログイン ── */
+  #loginScreen {
+    max-width: 360px;
+    margin: 80px auto;
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    padding: 32px;
+    background: var(--bg2);
+    position: relative;
+  }
+  #loginScreen::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 20px; right: 20px;
+    height: 2px;
+    background: var(--green);
+    box-shadow: 0 0 12px var(--green);
+  }
+  .login-title {
+    font-family: var(--font-main);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--green);
+    text-align: center;
+    letter-spacing: 4px;
+    margin-bottom: 8px;
+  }
+  .login-sub {
+    font-size: 11px;
+    color: var(--text2);
+    text-align: center;
+    margin-bottom: 28px;
+    letter-spacing: 2px;
+  }
+  .login-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 2px;
+    color: var(--green);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .login-input:focus { border-color: var(--green); box-shadow: 0 0 8px rgba(0,255,136,0.2); }
+  .login-btn {
+    width: 100%;
+    background: var(--green3);
+    border: 1px solid var(--green);
+    color: var(--green);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 3px;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .login-btn:hover { background: var(--green); color: var(--bg); }
+  .login-err { color: var(--red); font-size: 11px; text-align: center; margin-top: 10px; display: none; }
+
+  /* ── メイン ── */
+  #mainScreen { display: none; max-width: 960px; margin: 0 auto; }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-title {
+    font-family: var(--font-main);
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: 6px;
+  }
+  .header-sub { font-size: 10px; color: var(--text2); letter-spacing: 2px; margin-top: 2px; }
+  .header-status { font-size: 11px; color: var(--text2); text-align: right; }
+
+  /* ── カード ── */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--green2), transparent);
+  }
+  .card-title {
+    font-family: var(--font-main);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--green2);
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── フォーム ── */
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 10px;
+    color: var(--text2);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .form-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 2px;
+    color: var(--green);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 7px 10px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus { border-color: var(--green); }
+
+  .btn {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    border-radius: 2px;
+    padding: 7px 16px;
+    cursor: pointer;
+    border: 1px solid;
+    transition: all 0.15s;
+  }
+  .btn-green {
+    background: var(--green3);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .btn-green:hover { background: var(--green); color: var(--bg); }
+  .btn-red {
+    background: var(--red2);
+    border-color: var(--red);
+    color: var(--red);
+  }
+  .btn-red:hover { background: var(--red); color: #fff; }
+  .btn-amber {
+    background: var(--amber2);
+    border-color: var(--amber);
+    color: var(--amber);
+  }
+  .btn-amber:hover { background: var(--amber); color: var(--bg); }
+  .btn-full { width: 100%; margin-top: 8px; padding: 10px; }
+
+  /* ── テーブル ── */
+  .table-wrap { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    table-layout: fixed;
+  }
+  th {
+    background: var(--bg);
+    color: var(--text2);
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: normal;
+    letter-spacing: 1px;
+    font-size: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 9px 10px;
+    border-bottom: 1px solid var(--border3, #0d1a12);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text);
+  }
+  tr:hover td { background: var(--bg3); }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+  .badge-active { background: var(--green3); color: var(--green); border: 1px solid var(--green2); }
+  .badge-inactive { background: #1a1a1a; color: #555; border: 1px solid #333; }
+  .badge-expired { background: var(--amber2); color: var(--amber); border: 1px solid var(--amber); }
+
+  .action-btns { display: flex; gap: 4px; }
+
+  #saveStatus {
+    text-align: center;
+    font-size: 11px;
+    min-height: 20px;
+    margin-top: 8px;
+    letter-spacing: 1px;
+  }
+  .ok  { color: var(--green); }
+  .err { color: var(--red); }
+
+  /* ── キー生成 ── */
+  .key-display {
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 2px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--green);
+    letter-spacing: 3px;
+    text-align: center;
+    margin: 10px 0;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .key-display:hover { border-color: var(--green); }
+
+  /* stats */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .stat-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .stat-val {
+    font-family: var(--font-main);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--green);
+  }
+  .stat-lbl { font-size: 10px; color: var(--text2); letter-spacing: 2px; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ログイン -->
+<div id="loginScreen">
+  <div class="login-title">HEDGELUCK</div>
+  <div class="login-sub">LICENSE MANAGEMENT SYSTEM</div>
+  <input class="login-input" type="password" id="loginPass" placeholder="ADMIN PASSWORD"
+    onkeydown="if(event.key==='Enter')doLogin()">
+  <input class="login-input" type="password" id="loginToken" placeholder="GITHUB TOKEN (初回のみ)"
+    onkeydown="if(event.key==='Enter')doLogin()">
+  <button class="login-btn" onclick="doLogin()">ACCESS</button>
+  <div class="login-err" id="loginErr">ACCESS DENIED</div>
+</div>
+
+<!-- メイン -->
+<div id="mainScreen">
+  <div class="header">
+    <div>
+      <div class="header-title">HEDGELUCK</div>
+      <div class="header-sub">LICENSE MANAGEMENT SYSTEM v1.0</div>
+    </div>
+    <div class="header-status" id="headerStatus">--</div>
+  </div>
+
+  <!-- 統計 -->
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-val" id="statTotal">0</div>
+      <div class="stat-lbl">TOTAL LICENSES</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val" id="statActive" style="color:var(--green)">0</div>
+      <div class="stat-lbl">ACTIVE</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val" id="statInactive" style="color:var(--red)">0</div>
+      <div class="stat-lbl">INACTIVE</div>
+    </div>
+  </div>
+
+  <!-- 新規追加 -->
+  <div class="card">
+    <div class="card-title">NEW LICENSE</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>NAME</label>
+        <input class="form-input" type="text" id="newName" placeholder="ユーザー名">
+      </div>
+      <div class="form-group">
+        <label>XM ACCOUNT</label>
+        <input class="form-input" type="text" id="newXmAccount" placeholder="12345678">
+      </div>
+      <div class="form-group">
+        <label>VANTAGE ACCOUNT</label>
+        <input class="form-input" type="text" id="newVtAccount" placeholder="87654321">
+      </div>
+      <div class="form-group">
+        <label>XM VPS IP</label>
+        <input class="form-input" type="text" id="newXmIp" placeholder="123.456.789.0">
+      </div>
+      <div class="form-group">
+        <label>EXPIRE DATE</label>
+        <input class="form-input" type="date" id="newExpire">
+      </div>
+    </div>
+    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+      <button class="btn btn-amber" onclick="generateKey()">GENERATE KEY</button>
+      <div class="key-display" id="keyDisplay" onclick="copyKey()" title="クリックでコピー">HLCK-XXXX-XXXX-XXXX</div>
+      <button class="btn btn-green" onclick="addLicense()">ADD LICENSE</button>
+    </div>
+  </div>
+
+  <!-- ライセンス一覧 -->
+  <div class="card">
+    <div class="card-title">LICENSE LIST</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:160px">LICENSE KEY</th>
+            <th style="width:90px">NAME</th>
+            <th style="width:90px">XM ACCT</th>
+            <th style="width:90px">VT ACCT</th>
+            <th style="width:110px">XM VPS IP</th>
+            <th style="width:90px">EXPIRE</th>
+            <th style="width:70px">STATUS</th>
+            <th style="width:110px">ACTION</th>
+          </tr>
+        </thead>
+        <tbody id="licenseTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="saveStatus"></div>
+</div>
+
+<script>
+const ADMIN_PASSWORD = "hedgeluck2026";
+const GH_USER  = "nanve";
+const GH_REPO  = "hedgeluck";
+const GH_FILE  = "auth.json";
+
+let licenses = [];
+let fileSHA  = "";
+let generatedKey = "";
+
+// ── ログイン ──────────────────────────────────
+function doLogin() {
+  const pass = document.getElementById("loginPass").value;
+  if (pass !== ADMIN_PASSWORD) {
+    document.getElementById("loginErr").style.display = "block";
+    return;
+  }
+  const tok = document.getElementById("loginToken").value.trim();
+  if (tok) localStorage.setItem("hl_ghToken", tok);
+  if (!localStorage.getItem("hl_ghToken")) {
+    document.getElementById("loginErr").textContent = "GITHUB TOKEN REQUIRED";
+    document.getElementById("loginErr").style.display = "block";
+    return;
+  }
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("mainScreen").style.display  = "block";
+  loadFromGitHub();
+}
+
+// ── キー生成 ──────────────────────────────────
+function generateKey() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const seg = () => Array.from({length:4}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
+  generatedKey = `HLCK-${seg()}-${seg()}-${seg()}`;
+  document.getElementById("keyDisplay").textContent = generatedKey;
+}
+
+function copyKey() {
+  if (!generatedKey) return;
+  navigator.clipboard.writeText(generatedKey);
+  const el = document.getElementById("keyDisplay");
+  el.textContent = "COPIED!";
+  setTimeout(() => el.textContent = generatedKey, 1000);
+}
+
+// ── ライセンス追加 ────────────────────────────
+async function addLicense() {
+  const key     = generatedKey || document.getElementById("keyDisplay").textContent;
+  const name    = document.getElementById("newName").value.trim();
+  const xmAcct  = document.getElementById("newXmAccount").value.trim();
+  const vtAcct  = document.getElementById("newVtAccount").value.trim();
+  const xmIp    = document.getElementById("newXmIp").value.trim();
+  const expire  = document.getElementById("newExpire").value.replace(/-/g, "/");
+
+  if (!key || key === "HLCK-XXXX-XXXX-XXXX") { alert("キーを生成してください"); return; }
+  if (!name) { alert("名前を入力してください"); return; }
+  if (licenses.find(l => l.key === key)) { alert("このキーは既に登録されています"); return; }
+
+  licenses.push({ key, name, xm_account: xmAcct, vantage_account: vtAcct, xm_vps_ip: xmIp, expire, active: true });
+  renderTable();
+  updateStats();
+
+  document.getElementById("newName").value      = "";
+  document.getElementById("newXmAccount").value = "";
+  document.getElementById("newVtAccount").value = "";
+  document.getElementById("newXmIp").value      = "";
+  generatedKey = "";
+  document.getElementById("keyDisplay").textContent = "HLCK-XXXX-XXXX-XXXX";
+
+  await saveToGitHub();
+}
+
+// ── テーブル描画 ──────────────────────────────
+function renderTable() {
+  const tbody = document.getElementById("licenseTable");
+  tbody.innerHTML = "";
+  const today = new Date().toISOString().slice(0,10).replace(/-/g,"/");
+
+  licenses.forEach((lic, i) => {
+    const expired = lic.expire && lic.expire < today;
+    let badge = "";
+    if      (!lic.active) badge = `<span class="badge badge-inactive">INACTIVE</span>`;
+    else if (expired)     badge = `<span class="badge badge-expired">EXPIRED</span>`;
+    else                  badge = `<span class="badge badge-active">ACTIVE</span>`;
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td style="font-size:10px;color:var(--green);letter-spacing:1px">${lic.key}</td>
+      <td>${lic.name || "-"}</td>
+      <td>${lic.xm_account || "-"}</td>
+      <td>${lic.vantage_account || "-"}</td>
+      <td style="font-size:10px">${lic.xm_vps_ip || "-"}</td>
+      <td>${lic.expire || "-"}</td>
+      <td>${badge}</td>
+      <td>
+        <div class="action-btns">
+          <button class="btn ${lic.active ? 'btn-red' : 'btn-green'}"
+            style="padding:3px 8px;font-size:10px"
+            onclick="toggleLicense(${i})">${lic.active ? "STOP" : "START"}</button>
+          <button class="btn btn-red"
+            style="padding:3px 8px;font-size:10px"
+            onclick="deleteLicense(${i})">DEL</button>
+        </div>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function updateStats() {
+  const today   = new Date().toISOString().slice(0,10).replace(/-/g,"/");
+  const active  = licenses.filter(l => l.active && (!l.expire || l.expire >= today)).length;
+  const inactive = licenses.length - active;
+  document.getElementById("statTotal").textContent   = licenses.length;
+  document.getElementById("statActive").textContent  = active;
+  document.getElementById("statInactive").textContent = inactive;
+}
+
+// ── 有効/無効切替 ─────────────────────────────
+async function toggleLicense(i) {
+  licenses[i].active = !licenses[i].active;
+  renderTable();
+  updateStats();
+  await saveToGitHub();
+}
+
+// ── 削除 ──────────────────────────────────────
+async function deleteLicense(i) {
+  if (!confirm(`${licenses[i].key} を削除しますか？`)) return;
+  licenses.splice(i, 1);
+  renderTable();
+  updateStats();
+  await saveToGitHub();
+}
+
+// ── GitHubから読み込み ────────────────────────
+async function loadFromGitHub() {
+  const token = localStorage.getItem("hl_ghToken") || "";
+  showStatus("LOADING...", true);
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}?ref=main`,
+      { headers: { Authorization: `token ${token}`, Accept: "application/vnd.github.v3+json" } }
+    );
+    if (res.status === 404) {
+      fileSHA  = "";
+      licenses = [];
+      renderTable();
+      updateStats();
+      showStatus("NEW REPO - ADD FIRST LICENSE", true);
+      document.getElementById("headerStatus").textContent = `REPO: ${GH_USER}/${GH_REPO}`;
+      return;
+    }
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data   = await res.json();
+    fileSHA      = data.sha;
+    const binary = atob(data.content.replace(/\n/g,""));
+    const bytes  = new Uint8Array(binary.length);
+    for(let i=0;i<binary.length;i++) bytes[i]=binary.charCodeAt(i);
+    const json   = JSON.parse(new TextDecoder("utf-8").decode(bytes));
+    licenses     = json.licenses || [];
+    renderTable();
+    updateStats();
+    showStatus(`LOADED ${licenses.length} LICENSES`, true);
+    document.getElementById("headerStatus").textContent = `REPO: ${GH_USER}/${GH_REPO} | ${new Date().toLocaleTimeString()}`;
+  } catch(e) {
+    showStatus("LOAD ERROR: " + e.message, false);
+  }
+}
+
+// ── GitHubに保存 ──────────────────────────────
+async function saveToGitHub() {
+  const token   = localStorage.getItem("hl_ghToken") || "";
+  const jsonStr = JSON.stringify({ licenses }, null, 2);
+  const bytes   = new TextEncoder().encode(jsonStr);
+  let   binary  = "";
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  const content = btoa(binary);
+
+  try {
+    const body = { message: `hedgeluck auth update ${new Date().toISOString()}`, content, branch: "main" };
+    if (fileSHA) body.sha = fileSHA;
+
+    const res = await fetch(
+      `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`,
+      {
+        method: "PUT",
+        headers: { Authorization: `token ${token}`, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    fileSHA    = data.content.sha;
+    showStatus("SAVED OK", true);
+  } catch(e) {
+    showStatus("SAVE ERROR: " + e.message, false);
+  }
+}
+
+function showStatus(msg, ok) {
+  const el = document.getElementById("saveStatus");
+  el.textContent = msg;
+  el.className   = ok ? "ok" : "err";
+}
+
+// ── 初期値 ────────────────────────────────────
+const d = new Date();
+d.setFullYear(d.getFullYear() + 1);
+document.getElementById("newExpire").value = d.toISOString().slice(0,10);
+generateKey();
+</script>
+</body>
+</html>
