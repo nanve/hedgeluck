@@ -3,28 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HedgeLuck 認証管理</title>
+<title>HedgeLuck 認証管理 v2</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
 
   :root {
-    --bg:        #080c10;
-    --bg2:       #0d1117;
-    --bg3:       #111820;
-    --border:    #1e3a2a;
-    --border2:   #2a5a3a;
-    --green:     #00ff88;
-    --green2:    #00cc66;
-    --green3:    #004422;
-    --red:       #ff4466;
-    --red2:      #440011;
-    --amber:     #ffaa00;
-    --amber2:    #442200;
-    --text:      #c8e6c9;
-    --text2:     #4a7a5a;
-    --text3:     #2a4a3a;
-    --font-mono: 'Share Tech Mono', monospace;
-    --font-main: 'Rajdhani', sans-serif;
+    --bg:      #080c10;
+    --bg2:     #0d1117;
+    --bg3:     #111820;
+    --border:  #1e3a2a;
+    --border2: #2a5a3a;
+    --green:   #00ff88;
+    --green2:  #00cc66;
+    --green3:  #004422;
+    --red:     #ff4466;
+    --red2:    #440011;
+    --amber:   #ffaa00;
+    --amber2:  #442200;
+    --blue:    #00aaff;
+    --blue2:   #002244;
+    --text:    #c8e6c9;
+    --text2:   #4a7a5a;
+    --mono:    'Share Tech Mono', monospace;
+    --main:    'Rajdhani', sans-serif;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,272 +33,204 @@
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: var(--font-mono);
+    font-family: var(--mono);
     min-height: 100vh;
     padding: 24px 16px;
     background-image:
-      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(0,255,136,0.03) 40px),
-      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(0,255,136,0.03) 40px);
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(0,255,136,0.02) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(0,255,136,0.02) 40px);
   }
 
   /* ── ログイン ── */
   #loginScreen {
-    max-width: 360px;
+    max-width: 380px;
     margin: 80px auto;
     border: 1px solid var(--border2);
     border-radius: 4px;
-    padding: 32px;
+    padding: 36px;
     background: var(--bg2);
     position: relative;
   }
   #loginScreen::before {
-    content: '';
-    position: absolute;
-    top: -1px; left: 20px; right: 20px;
-    height: 2px;
+    content:''; position:absolute;
+    top:-1px; left:20px; right:20px; height:2px;
     background: var(--green);
-    box-shadow: 0 0 12px var(--green);
+    box-shadow: 0 0 16px var(--green);
   }
-  .login-title {
-    font-family: var(--font-main);
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--green);
-    text-align: center;
-    letter-spacing: 4px;
-    margin-bottom: 8px;
+  .login-title { font-family:var(--main); font-size:24px; font-weight:700; color:var(--green); text-align:center; letter-spacing:6px; margin-bottom:6px; }
+  .login-sub   { font-size:10px; color:var(--text2); text-align:center; letter-spacing:2px; margin-bottom:28px; }
+  .l-input {
+    width:100%; background:var(--bg); border:1px solid var(--border2);
+    border-radius:2px; color:var(--green); font-family:var(--mono);
+    font-size:13px; padding:10px 12px; margin-bottom:12px; outline:none;
+    transition:border-color 0.2s;
   }
-  .login-sub {
-    font-size: 11px;
-    color: var(--text2);
-    text-align: center;
-    margin-bottom: 28px;
-    letter-spacing: 2px;
+  .l-input:focus { border-color:var(--green); box-shadow:0 0 8px rgba(0,255,136,0.15); }
+  .l-btn {
+    width:100%; background:var(--green3); border:1px solid var(--green);
+    color:var(--green); font-family:var(--mono); font-size:13px;
+    letter-spacing:3px; padding:10px; cursor:pointer; border-radius:2px; transition:all 0.2s;
   }
-  .login-input {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border2);
-    border-radius: 2px;
-    color: var(--green);
-    font-family: var(--font-mono);
-    font-size: 13px;
-    padding: 10px 12px;
-    margin-bottom: 12px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .login-input:focus { border-color: var(--green); box-shadow: 0 0 8px rgba(0,255,136,0.2); }
-  .login-btn {
-    width: 100%;
-    background: var(--green3);
-    border: 1px solid var(--green);
-    color: var(--green);
-    font-family: var(--font-mono);
-    font-size: 13px;
-    letter-spacing: 3px;
-    padding: 10px;
-    cursor: pointer;
-    border-radius: 2px;
-    transition: all 0.2s;
-  }
-  .login-btn:hover { background: var(--green); color: var(--bg); }
-  .login-err { color: var(--red); font-size: 11px; text-align: center; margin-top: 10px; display: none; }
+  .l-btn:hover { background:var(--green); color:var(--bg); }
+  .l-err { color:var(--red); font-size:11px; text-align:center; margin-top:10px; display:none; }
 
   /* ── メイン ── */
-  #mainScreen { display: none; max-width: 960px; margin: 0 auto; }
+  #mainScreen { display:none; max-width:1100px; margin:0 auto; }
 
   .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 28px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border);
   }
-  .header-title {
-    font-family: var(--font-main);
-    font-size: 26px;
-    font-weight: 700;
-    color: var(--green);
-    letter-spacing: 6px;
-  }
-  .header-sub { font-size: 10px; color: var(--text2); letter-spacing: 2px; margin-top: 2px; }
-  .header-status { font-size: 11px; color: var(--text2); text-align: right; }
-
-  /* ── カード ── */
-  .card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 20px;
-    margin-bottom: 20px;
-    position: relative;
-  }
-  .card::before {
-    content: '';
-    position: absolute;
-    top: -1px; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--green2), transparent);
-  }
-  .card-title {
-    font-family: var(--font-main);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--green2);
-    letter-spacing: 3px;
-    margin-bottom: 16px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  /* ── フォーム ── */
-  .form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 10px;
-    margin-bottom: 12px;
-  }
-  .form-group label {
-    display: block;
-    font-size: 10px;
-    color: var(--text2);
-    letter-spacing: 1px;
-    margin-bottom: 4px;
-  }
-  .form-input {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border2);
-    border-radius: 2px;
-    color: var(--green);
-    font-family: var(--font-mono);
-    font-size: 12px;
-    padding: 7px 10px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .form-input:focus { border-color: var(--green); }
-
-  .btn {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 2px;
-    border-radius: 2px;
-    padding: 7px 16px;
-    cursor: pointer;
-    border: 1px solid;
-    transition: all 0.15s;
-  }
-  .btn-green {
-    background: var(--green3);
-    border-color: var(--green);
-    color: var(--green);
-  }
-  .btn-green:hover { background: var(--green); color: var(--bg); }
-  .btn-red {
-    background: var(--red2);
-    border-color: var(--red);
-    color: var(--red);
-  }
-  .btn-red:hover { background: var(--red); color: #fff; }
-  .btn-amber {
-    background: var(--amber2);
-    border-color: var(--amber);
-    color: var(--amber);
-  }
-  .btn-amber:hover { background: var(--amber); color: var(--bg); }
-  .btn-full { width: 100%; margin-top: 8px; padding: 10px; }
-
-  /* ── テーブル ── */
-  .table-wrap { overflow-x: auto; }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 11px;
-    table-layout: fixed;
-  }
-  th {
-    background: var(--bg);
-    color: var(--text2);
-    padding: 8px 10px;
-    text-align: left;
-    font-weight: normal;
-    letter-spacing: 1px;
-    font-size: 10px;
-    border-bottom: 1px solid var(--border);
-  }
-  td {
-    padding: 9px 10px;
-    border-bottom: 1px solid var(--border3, #0d1a12);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: var(--text);
-  }
-  tr:hover td { background: var(--bg3); }
-
-  .badge {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 2px;
-    font-size: 10px;
-    letter-spacing: 1px;
-  }
-  .badge-active { background: var(--green3); color: var(--green); border: 1px solid var(--green2); }
-  .badge-inactive { background: #1a1a1a; color: #555; border: 1px solid #333; }
-  .badge-expired { background: var(--amber2); color: var(--amber); border: 1px solid var(--amber); }
-
-  .action-btns { display: flex; gap: 4px; }
-
-  #saveStatus {
-    text-align: center;
-    font-size: 11px;
-    min-height: 20px;
-    margin-top: 8px;
-    letter-spacing: 1px;
-  }
-  .ok  { color: var(--green); }
-  .err { color: var(--red); }
-
-  /* ── キー生成 ── */
-  .key-display {
-    background: var(--bg);
-    border: 1px solid var(--border2);
-    border-radius: 2px;
-    padding: 10px 14px;
-    font-size: 14px;
-    color: var(--green);
-    letter-spacing: 3px;
-    text-align: center;
-    margin: 10px 0;
-    cursor: pointer;
-    transition: border-color 0.2s;
-  }
-  .key-display:hover { border-color: var(--green); }
+  .h-title { font-family:var(--main); font-size:26px; font-weight:700; color:var(--green); letter-spacing:6px; }
+  .h-sub   { font-size:10px; color:var(--text2); letter-spacing:2px; margin-top:2px; }
+  .h-info  { font-size:10px; color:var(--text2); text-align:right; line-height:1.8; }
 
   /* stats */
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
+  .stats {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px;
   }
-  .stat-box {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 14px 16px;
-    text-align: center;
+  .stat {
+    background:var(--bg2); border:1px solid var(--border);
+    border-radius:4px; padding:14px 16px; text-align:center; position:relative; overflow:hidden;
   }
-  .stat-val {
-    font-family: var(--font-main);
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--green);
+  .stat::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:var(--green3); }
+  .stat.green::after { background:var(--green); }
+  .stat.red::after   { background:var(--red); }
+  .stat.amber::after { background:var(--amber); }
+  .stat.blue::after  { background:var(--blue); }
+  .stat-v { font-family:var(--main); font-size:30px; font-weight:700; color:var(--green); }
+  .stat.red   .stat-v { color:var(--red); }
+  .stat.amber .stat-v { color:var(--amber); }
+  .stat.blue  .stat-v { color:var(--blue); }
+  .stat-l { font-size:9px; color:var(--text2); letter-spacing:2px; margin-top:4px; }
+
+  /* カード */
+  .card {
+    background:var(--bg2); border:1px solid var(--border);
+    border-radius:4px; padding:20px; margin-bottom:20px; position:relative;
   }
-  .stat-lbl { font-size: 10px; color: var(--text2); letter-spacing: 2px; margin-top: 4px; }
+  .card::before {
+    content:''; position:absolute; top:-1px; left:0; right:0; height:1px;
+    background:linear-gradient(90deg,transparent,var(--green2),transparent);
+  }
+  .card-title {
+    font-family:var(--main); font-size:13px; font-weight:600;
+    color:var(--green2); letter-spacing:3px; margin-bottom:16px;
+    padding-bottom:8px; border-bottom:1px solid var(--border);
+  }
+
+  /* フォーム */
+  .fg { margin-bottom:10px; }
+  .fg label { display:block; font-size:10px; color:var(--text2); letter-spacing:1px; margin-bottom:4px; }
+  .fi {
+    width:100%; background:var(--bg); border:1px solid var(--border2);
+    border-radius:2px; color:var(--green); font-family:var(--mono);
+    font-size:12px; padding:7px 10px; outline:none; transition:border-color 0.2s;
+  }
+  .fi:focus { border-color:var(--green); }
+  .fi-sm { width:auto; min-width:120px; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+  .grid4 { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+
+  /* ボタン */
+  .btn {
+    font-family:var(--mono); font-size:11px; letter-spacing:1px;
+    border-radius:2px; padding:6px 14px; cursor:pointer; border:1px solid; transition:all 0.15s;
+  }
+  .btn-g  { background:var(--green3); border-color:var(--green);  color:var(--green);  }
+  .btn-g:hover  { background:var(--green);  color:var(--bg); }
+  .btn-r  { background:var(--red2);   border-color:var(--red);    color:var(--red);    }
+  .btn-r:hover  { background:var(--red);    color:#fff; }
+  .btn-a  { background:var(--amber2); border-color:var(--amber);  color:var(--amber);  }
+  .btn-a:hover  { background:var(--amber);  color:var(--bg); }
+  .btn-b  { background:var(--blue2);  border-color:var(--blue);   color:var(--blue);   }
+  .btn-b:hover  { background:var(--blue);   color:var(--bg); }
+  .btn-sm { padding:3px 8px; font-size:10px; }
+
+  /* キー表示 */
+  .key-box {
+    background:var(--bg); border:1px solid var(--border2); border-radius:2px;
+    padding:8px 14px; font-size:13px; color:var(--green); letter-spacing:3px;
+    cursor:pointer; transition:border-color 0.2s; display:inline-block; min-width:220px; text-align:center;
+  }
+  .key-box:hover { border-color:var(--green); }
+
+  /* ユーザーリスト */
+  .user-list { display:flex; flex-direction:column; gap:12px; }
+
+  .user-card {
+    background:var(--bg3); border:1px solid var(--border);
+    border-radius:4px; overflow:hidden;
+  }
+  .user-header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 16px; cursor:pointer;
+    border-bottom:1px solid transparent; transition:border-color 0.2s;
+  }
+  .user-header:hover { border-bottom-color:var(--border); background:var(--bg2); }
+  .user-header.open  { border-bottom-color:var(--border); background:var(--bg2); }
+
+  .user-info { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .user-name { font-family:var(--main); font-size:15px; font-weight:600; color:var(--green); letter-spacing:2px; }
+  .user-key  { font-size:10px; color:var(--text2); letter-spacing:1px; }
+  .user-id   { font-size:10px; color:var(--text2); }
+  .user-exp  { font-size:10px; }
+
+  .badge {
+    display:inline-block; padding:2px 8px; border-radius:2px;
+    font-size:10px; letter-spacing:1px;
+  }
+  .b-active   { background:var(--green3); color:var(--green); border:1px solid var(--green2); }
+  .b-inactive { background:#1a1a1a; color:#555; border:1px solid #333; }
+  .b-expired  { background:var(--amber2); color:var(--amber); border:1px solid var(--amber); }
+  .b-mt5      { background:var(--blue2);  color:var(--blue);  border:1px solid var(--blue);  font-size:9px; padding:1px 5px; }
+  .b-mt4      { background:var(--amber2); color:var(--amber); border:1px solid var(--amber); font-size:9px; padding:1px 5px; }
+
+  .user-body  { padding:16px; display:none; }
+  .user-body.open { display:block; }
+
+  /* 口座テーブル */
+  .acct-table { width:100%; border-collapse:collapse; font-size:11px; margin-bottom:12px; }
+  .acct-table th {
+    background:var(--bg); color:var(--text2); padding:6px 10px;
+    text-align:left; font-weight:normal; font-size:10px; letter-spacing:1px;
+    border-bottom:1px solid var(--border);
+  }
+  .acct-table td {
+    padding:7px 10px; border-bottom:1px solid var(--border);
+    color:var(--text);
+  }
+  .acct-table tr:last-child td { border-bottom:none; }
+  .acct-table tr:hover td { background:var(--bg2); }
+
+  /* 口座追加フォーム */
+  .acct-add {
+    background:var(--bg); border:1px solid var(--border);
+    border-radius:2px; padding:12px; margin-top:8px;
+  }
+  .acct-add-title { font-size:10px; color:var(--text2); letter-spacing:2px; margin-bottom:10px; }
+
+  /* プラン */
+  .plan-row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:12px; }
+  .plan-tag {
+    padding:4px 12px; border-radius:2px; font-size:11px; letter-spacing:1px;
+    border:1px solid var(--border2); color:var(--text2); cursor:pointer; transition:all 0.15s;
+  }
+  .plan-tag.sel { border-color:var(--green); color:var(--green); background:var(--green3); }
+
+  #saveStatus { text-align:center; font-size:11px; min-height:20px; margin-top:8px; letter-spacing:1px; }
+  .ok  { color:var(--green); }
+  .err { color:var(--red); }
+
+  .sep { border:none; border-top:1px solid var(--border); margin:12px 0; }
+  .row-btns { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:12px; }
+  .mt4 { margin-top:4px; }
+  .ml8 { margin-left:8px; }
+  .tag-stripe {
+    font-size:10px; color:var(--blue); border:1px solid var(--blue);
+    padding:2px 8px; border-radius:2px; display:inline-block; letter-spacing:1px;
+  }
 </style>
 </head>
 <body>
@@ -305,93 +238,90 @@
 <!-- ログイン -->
 <div id="loginScreen">
   <div class="login-title">HEDGELUCK</div>
-  <div class="login-sub">LICENSE MANAGEMENT SYSTEM</div>
-  <input class="login-input" type="password" id="loginPass" placeholder="ADMIN PASSWORD"
-    onkeydown="if(event.key==='Enter')doLogin()">
-  <input class="login-input" type="password" id="loginToken" placeholder="GITHUB TOKEN (初回のみ)"
-    onkeydown="if(event.key==='Enter')doLogin()">
-  <button class="login-btn" onclick="doLogin()">ACCESS</button>
-  <div class="login-err" id="loginErr">ACCESS DENIED</div>
+  <div class="login-sub">LICENSE MANAGEMENT v2.0</div>
+  <input class="l-input" type="password" id="loginPass" placeholder="ADMIN PASSWORD" onkeydown="if(event.key==='Enter')doLogin()">
+  <input class="l-input" type="password" id="loginToken" placeholder="GITHUB TOKEN (初回のみ)" onkeydown="if(event.key==='Enter')doLogin()">
+  <button class="l-btn" onclick="doLogin()">ACCESS</button>
+  <div class="l-err" id="loginErr">ACCESS DENIED</div>
 </div>
 
 <!-- メイン -->
 <div id="mainScreen">
   <div class="header">
     <div>
-      <div class="header-title">HEDGELUCK</div>
-      <div class="header-sub">LICENSE MANAGEMENT SYSTEM v1.0</div>
+      <div class="h-title">HEDGELUCK</div>
+      <div class="h-sub">LICENSE MANAGEMENT v2.0</div>
     </div>
-    <div class="header-status" id="headerStatus">--</div>
+    <div class="h-info" id="hInfo">--</div>
   </div>
 
   <!-- 統計 -->
-  <div class="stats-row">
-    <div class="stat-box">
-      <div class="stat-val" id="statTotal">0</div>
-      <div class="stat-lbl">TOTAL LICENSES</div>
+  <div class="stats">
+    <div class="stat green">
+      <div class="stat-v" id="sTotal">0</div>
+      <div class="stat-l">TOTAL USERS</div>
     </div>
-    <div class="stat-box">
-      <div class="stat-val" id="statActive" style="color:var(--green)">0</div>
-      <div class="stat-lbl">ACTIVE</div>
+    <div class="stat green">
+      <div class="stat-v" id="sActive">0</div>
+      <div class="stat-l">ACTIVE</div>
     </div>
-    <div class="stat-box">
-      <div class="stat-val" id="statInactive" style="color:var(--red)">0</div>
-      <div class="stat-lbl">INACTIVE</div>
+    <div class="stat red">
+      <div class="stat-v" id="sInactive">0</div>
+      <div class="stat-l">INACTIVE</div>
+    </div>
+    <div class="stat blue">
+      <div class="stat-v" id="sAccounts">0</div>
+      <div class="stat-l">TOTAL ACCOUNTS</div>
     </div>
   </div>
 
-  <!-- 新規追加 -->
+  <!-- 新規ユーザー追加 -->
   <div class="card">
-    <div class="card-title">NEW LICENSE</div>
-    <div class="form-grid">
-      <div class="form-group">
+    <div class="card-title">NEW USER</div>
+    <div class="grid3">
+      <div class="fg">
         <label>NAME</label>
-        <input class="form-input" type="text" id="newName" placeholder="ユーザー名">
+        <input class="fi" type="text" id="nName" placeholder="ユーザー名">
       </div>
-      <div class="form-group">
-        <label>XM ACCOUNT</label>
-        <input class="form-input" type="text" id="newXmAccount" placeholder="12345678">
+      <div class="fg">
+        <label>EMAIL</label>
+        <input class="fi" type="email" id="nEmail" placeholder="user@example.com">
       </div>
-      <div class="form-group">
-        <label>VANTAGE ACCOUNT</label>
-        <input class="form-input" type="text" id="newVtAccount" placeholder="87654321">
-      </div>
-      <div class="form-group">
-        <label>XM VPS IP</label>
-        <input class="form-input" type="text" id="newXmIp" placeholder="123.456.789.0">
-      </div>
-      <div class="form-group">
-        <label>EXPIRE DATE</label>
-        <input class="form-input" type="date" id="newExpire">
+      <div class="fg">
+        <label>PLAN</label>
+        <select class="fi" id="nPlan">
+          <option value="monthly">MONTHLY</option>
+          <option value="yearly">YEARLY</option>
+          <option value="lifetime">LIFETIME</option>
+          <option value="trial">TRIAL</option>
+        </select>
       </div>
     </div>
-    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-      <button class="btn btn-amber" onclick="generateKey()">GENERATE KEY</button>
-      <div class="key-display" id="keyDisplay" onclick="copyKey()" title="クリックでコピー">HLCK-XXXX-XXXX-XXXX</div>
-      <button class="btn btn-green" onclick="addLicense()">ADD LICENSE</button>
+    <div class="grid3">
+      <div class="fg">
+        <label>EXPIRE DATE</label>
+        <input class="fi" type="date" id="nExpire">
+      </div>
+      <div class="fg">
+        <label>STRIPE CUSTOMER ID (任意)</label>
+        <input class="fi" type="text" id="nStripe" placeholder="cus_XXXXXXXXXX">
+      </div>
+      <div class="fg">
+        <label>MEMO</label>
+        <input class="fi" type="text" id="nMemo" placeholder="メモ">
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:4px;">
+      <button class="btn btn-a" onclick="generateKey()">GENERATE KEY</button>
+      <div class="key-box" id="keyBox" onclick="copyKey()" title="クリックでコピー">HLCK-XXXX-XXXX-XXXX</div>
+      <button class="btn btn-g" onclick="addUser()">ADD USER</button>
     </div>
   </div>
 
-  <!-- ライセンス一覧 -->
+  <!-- ユーザーリスト -->
   <div class="card">
-    <div class="card-title">LICENSE LIST</div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th style="width:160px">LICENSE KEY</th>
-            <th style="width:90px">NAME</th>
-            <th style="width:90px">XM ACCT</th>
-            <th style="width:90px">VT ACCT</th>
-            <th style="width:110px">XM VPS IP</th>
-            <th style="width:90px">EXPIRE</th>
-            <th style="width:70px">STATUS</th>
-            <th style="width:110px">ACTION</th>
-          </tr>
-        </thead>
-        <tbody id="licenseTable"></tbody>
-      </table>
-    </div>
+    <div class="card-title">USER LIST</div>
+    <div class="user-list" id="userList"></div>
   </div>
 
   <div id="saveStatus"></div>
@@ -399,18 +329,19 @@
 
 <script>
 const ADMIN_PASSWORD = "hedgeluck2026";
-const GH_USER  = "nanve";
-const GH_REPO  = "hedgeluck";
-const GH_FILE  = "auth.json";
+const GH_USER = "nanve";
+const GH_REPO = "hedgeluck";
+const GH_FILE = "auth.json";
 
-let licenses = [];
+let users    = [];
 let fileSHA  = "";
-let generatedKey = "";
+let genKey   = "";
 
 // ── ログイン ──────────────────────────────────
 function doLogin() {
   const pass = document.getElementById("loginPass").value;
   if (pass !== ADMIN_PASSWORD) {
+    document.getElementById("loginErr").textContent = "ACCESS DENIED";
     document.getElementById("loginErr").style.display = "block";
     return;
   }
@@ -428,110 +359,310 @@ function doLogin() {
 
 // ── キー生成 ──────────────────────────────────
 function generateKey() {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  const seg = () => Array.from({length:4}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
-  generatedKey = `HLCK-${seg()}-${seg()}-${seg()}`;
-  document.getElementById("keyDisplay").textContent = generatedKey;
+  const c = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const s = () => Array.from({length:4}, () => c[Math.floor(Math.random()*c.length)]).join('');
+  genKey = `HLCK-${s()}-${s()}-${s()}`;
+  document.getElementById("keyBox").textContent = genKey;
 }
 
 function copyKey() {
-  if (!generatedKey) return;
-  navigator.clipboard.writeText(generatedKey);
-  const el = document.getElementById("keyDisplay");
+  const k = genKey || document.getElementById("keyBox").textContent;
+  if (!k || k === "HLCK-XXXX-XXXX-XXXX") return;
+  navigator.clipboard.writeText(k);
+  const el = document.getElementById("keyBox");
+  const prev = el.textContent;
   el.textContent = "COPIED!";
-  setTimeout(() => el.textContent = generatedKey, 1000);
+  setTimeout(() => el.textContent = prev, 1000);
 }
 
-// ── ライセンス追加 ────────────────────────────
-async function addLicense() {
-  const key     = generatedKey || document.getElementById("keyDisplay").textContent;
-  const name    = document.getElementById("newName").value.trim();
-  const xmAcct  = document.getElementById("newXmAccount").value.trim();
-  const vtAcct  = document.getElementById("newVtAccount").value.trim();
-  const xmIp    = document.getElementById("newXmIp").value.trim();
-  const expire  = document.getElementById("newExpire").value.replace(/-/g, "/");
+// ── ユーザーID生成 ────────────────────────────
+function genUserId() {
+  return "USR-" + String(Date.now()).slice(-6);
+}
+
+// ── ユーザー追加 ──────────────────────────────
+async function addUser() {
+  const key    = genKey || document.getElementById("keyBox").textContent;
+  const name   = document.getElementById("nName").value.trim();
+  const email  = document.getElementById("nEmail").value.trim();
+  const plan   = document.getElementById("nPlan").value;
+  const expire = document.getElementById("nExpire").value.replace(/-/g,"/");
+  const stripe = document.getElementById("nStripe").value.trim();
+  const memo   = document.getElementById("nMemo").value.trim();
 
   if (!key || key === "HLCK-XXXX-XXXX-XXXX") { alert("キーを生成してください"); return; }
   if (!name) { alert("名前を入力してください"); return; }
-  if (licenses.find(l => l.key === key)) { alert("このキーは既に登録されています"); return; }
+  if (users.find(u => u.license_key === key)) { alert("このキーは既に登録されています"); return; }
 
-  licenses.push({ key, name, xm_account: xmAcct, vantage_account: vtAcct, xm_vps_ip: xmIp, expire, active: true });
-  renderTable();
+  users.push({
+    id:          genUserId(),
+    name,
+    email,
+    license_key: key,
+    plan,
+    expire,
+    active:      true,
+    stripe_id:   stripe,
+    memo,
+    created:     new Date().toISOString().slice(0,10).replace(/-/g,"/"),
+    accounts:    []
+  });
+
+  renderUsers();
   updateStats();
-
-  document.getElementById("newName").value      = "";
-  document.getElementById("newXmAccount").value = "";
-  document.getElementById("newVtAccount").value = "";
-  document.getElementById("newXmIp").value      = "";
-  generatedKey = "";
-  document.getElementById("keyDisplay").textContent = "HLCK-XXXX-XXXX-XXXX";
-
+  clearNewUserForm();
   await saveToGitHub();
 }
 
-// ── テーブル描画 ──────────────────────────────
-function renderTable() {
-  const tbody = document.getElementById("licenseTable");
-  tbody.innerHTML = "";
+function clearNewUserForm() {
+  ["nName","nEmail","nStripe","nMemo"].forEach(id => document.getElementById(id).value = "");
+  document.getElementById("nPlan").value = "monthly";
+  genKey = "";
+  document.getElementById("keyBox").textContent = "HLCK-XXXX-XXXX-XXXX";
+}
+
+// ── ユーザー描画 ──────────────────────────────
+function renderUsers() {
+  const container = document.getElementById("userList");
+  container.innerHTML = "";
   const today = new Date().toISOString().slice(0,10).replace(/-/g,"/");
 
-  licenses.forEach((lic, i) => {
-    const expired = lic.expire && lic.expire < today;
+  users.forEach((u, ui) => {
+    const expired = u.expire && u.expire < today;
     let badge = "";
-    if      (!lic.active) badge = `<span class="badge badge-inactive">INACTIVE</span>`;
-    else if (expired)     badge = `<span class="badge badge-expired">EXPIRED</span>`;
-    else                  badge = `<span class="badge badge-active">ACTIVE</span>`;
+    if      (!u.active) badge = `<span class="badge b-inactive">INACTIVE</span>`;
+    else if (expired)   badge = `<span class="badge b-expired">EXPIRED</span>`;
+    else                badge = `<span class="badge b-active">ACTIVE</span>`;
 
+    const expColor = expired ? "color:var(--amber)" : "color:var(--text2)";
+    const stripeTag = u.stripe_id ? `<span class="tag-stripe">STRIPE</span>` : "";
+
+    const div = document.createElement("div");
+    div.className = "user-card";
+    div.innerHTML = `
+      <div class="user-header" onclick="toggleUser(this)" data-ui="${ui}">
+        <div class="user-info">
+          <span class="user-name">${u.name}</span>
+          <span class="user-key">${u.license_key}</span>
+          <span class="user-id">${u.id}</span>
+          <span class="badge b-${u.plan === 'monthly' ? 'active' : u.plan === 'yearly' ? 'active' : u.plan === 'lifetime' ? 'active' : 'inactive'}" style="font-size:9px">${u.plan.toUpperCase()}</span>
+          ${badge}
+          ${stripeTag}
+          <span style="font-size:10px;${expColor}">EXP: ${u.expire || '--'}</span>
+          <span style="font-size:10px;color:var(--text2)">${u.accounts ? u.accounts.length : 0} ACCOUNTS</span>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-sm ${u.active ? 'btn-r' : 'btn-g'}" onclick="event.stopPropagation();toggleActive(${ui})">${u.active ? "STOP" : "START"}</button>
+          <button class="btn btn-sm btn-r" onclick="event.stopPropagation();deleteUser(${ui})">DEL</button>
+        </div>
+      </div>
+      <div class="user-body" id="body-${ui}">
+        <div class="grid3" style="margin-bottom:12px;">
+          <div class="fg">
+            <label>EMAIL</label>
+            <input class="fi" type="email" id="email-${ui}" value="${u.email || ''}" onchange="updateField(${ui},'email',this.value)">
+          </div>
+          <div class="fg">
+            <label>EXPIRE DATE</label>
+            <input class="fi" type="date" id="exp-${ui}" value="${u.expire ? u.expire.replace(/\//g,'-') : ''}" onchange="updateField(${ui},'expire',this.value.replace(/-/g,'/'))">
+          </div>
+          <div class="fg">
+            <label>STRIPE CUSTOMER ID</label>
+            <input class="fi" type="text" id="stripe-${ui}" value="${u.stripe_id || ''}" placeholder="cus_XXXXXXXXXX" onchange="updateField(${ui},'stripe_id',this.value)">
+          </div>
+        </div>
+        <div class="fg" style="margin-bottom:12px;">
+          <label>MEMO</label>
+          <input class="fi" type="text" value="${u.memo || ''}" onchange="updateField(${ui},'memo',this.value)">
+        </div>
+
+        <hr class="sep">
+
+        <!-- 口座一覧 -->
+        <div style="font-size:10px;color:var(--text2);letter-spacing:2px;margin-bottom:8px;">ACCOUNTS</div>
+        <table class="acct-table" id="acct-${ui}">
+          <thead>
+            <tr>
+              <th style="width:60px">TYPE</th>
+              <th style="width:100px">BROKER</th>
+              <th style="width:100px">ACCOUNT NO</th>
+              <th>VPS IP</th>
+              <th style="width:60px">STATUS</th>
+              <th style="width:80px">ACTION</th>
+            </tr>
+          </thead>
+          <tbody id="acct-body-${ui}"></tbody>
+        </table>
+
+        <!-- 口座追加 -->
+        <div class="acct-add">
+          <div class="acct-add-title">ADD ACCOUNT</div>
+          <div class="grid4">
+            <div class="fg">
+              <label>TYPE</label>
+              <select class="fi" id="a-type-${ui}">
+                <option value="MT5">MT5</option>
+                <option value="MT4">MT4</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label>BROKER</label>
+              <input class="fi" type="text" id="a-broker-${ui}" placeholder="XM / Vantage / FXGT...">
+            </div>
+            <div class="fg">
+              <label>ACCOUNT NO</label>
+              <input class="fi" type="text" id="a-acct-${ui}" placeholder="12345678">
+            </div>
+            <div class="fg">
+              <label>VPS IP</label>
+              <input class="fi" type="text" id="a-ip-${ui}" placeholder="123.456.789.0">
+            </div>
+          </div>
+          <button class="btn btn-b" style="margin-top:4px" onclick="addAccount(${ui})">ADD ACCOUNT</button>
+        </div>
+
+        <div class="row-btns">
+          <button class="btn btn-g" onclick="saveUser(${ui})">SAVE CHANGES</button>
+          <button class="btn btn-a" onclick="renewLicense(${ui})">RENEW +1 MONTH</button>
+          <button class="btn btn-a" onclick="renewLicenseYear(${ui})">RENEW +1 YEAR</button>
+        </div>
+      </div>`;
+    container.appendChild(div);
+    renderAccounts(ui);
+  });
+}
+
+// ── アコーディオン ────────────────────────────
+function toggleUser(header) {
+  const ui   = header.dataset.ui;
+  const body = document.getElementById(`body-${ui}`);
+  const open = body.classList.contains("open");
+  document.querySelectorAll(".user-body").forEach(b => b.classList.remove("open"));
+  document.querySelectorAll(".user-header").forEach(h => h.classList.remove("open"));
+  if (!open) { body.classList.add("open"); header.classList.add("open"); }
+}
+
+// ── 口座描画 ──────────────────────────────────
+function renderAccounts(ui) {
+  const tbody = document.getElementById(`acct-body-${ui}`);
+  if (!tbody) return;
+  tbody.innerHTML = "";
+  const accts = users[ui].accounts || [];
+  accts.forEach((a, ai) => {
+    const typeBadge = a.type === "MT5"
+      ? `<span class="badge b-mt5">MT5</span>`
+      : `<span class="badge b-mt4">MT4</span>`;
+    const stBadge = a.active
+      ? `<span class="badge b-active" style="font-size:9px">ON</span>`
+      : `<span class="badge b-inactive" style="font-size:9px">OFF</span>`;
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td style="font-size:10px;color:var(--green);letter-spacing:1px">${lic.key}</td>
-      <td>${lic.name || "-"}</td>
-      <td>${lic.xm_account || "-"}</td>
-      <td>${lic.vantage_account || "-"}</td>
-      <td style="font-size:10px">${lic.xm_vps_ip || "-"}</td>
-      <td>${lic.expire || "-"}</td>
-      <td>${badge}</td>
+      <td>${typeBadge}</td>
+      <td>${a.broker || "-"}</td>
+      <td style="font-family:var(--mono)">${a.account_no || "-"}</td>
+      <td style="font-size:10px">${a.vps_ip || "-"}</td>
+      <td>${stBadge}</td>
       <td>
-        <div class="action-btns">
-          <button class="btn ${lic.active ? 'btn-red' : 'btn-green'}"
-            style="padding:3px 8px;font-size:10px"
-            onclick="toggleLicense(${i})">${lic.active ? "STOP" : "START"}</button>
-          <button class="btn btn-red"
-            style="padding:3px 8px;font-size:10px"
-            onclick="deleteLicense(${i})">DEL</button>
+        <div style="display:flex;gap:4px;">
+          <button class="btn btn-sm ${a.active ? 'btn-r' : 'btn-g'}" onclick="toggleAccount(${ui},${ai})">${a.active ? "OFF" : "ON"}</button>
+          <button class="btn btn-sm btn-r" onclick="deleteAccount(${ui},${ai})">DEL</button>
         </div>
       </td>`;
     tbody.appendChild(tr);
   });
 }
 
+// ── 口座追加 ──────────────────────────────────
+async function addAccount(ui) {
+  const type   = document.getElementById(`a-type-${ui}`).value;
+  const broker = document.getElementById(`a-broker-${ui}`).value.trim();
+  const acct   = document.getElementById(`a-acct-${ui}`).value.trim();
+  const ip     = document.getElementById(`a-ip-${ui}`).value.trim();
+  if (!broker) { alert("Brokerを入力してください"); return; }
+  if (!users[ui].accounts) users[ui].accounts = [];
+  users[ui].accounts.push({ type, broker, account_no: acct, vps_ip: ip, active: true });
+  renderAccounts(ui);
+  updateStats();
+  document.getElementById(`a-broker-${ui}`).value = "";
+  document.getElementById(`a-acct-${ui}`).value   = "";
+  document.getElementById(`a-ip-${ui}`).value      = "";
+  await saveToGitHub();
+}
+
+// ── 口座ON/OFF ────────────────────────────────
+async function toggleAccount(ui, ai) {
+  users[ui].accounts[ai].active = !users[ui].accounts[ai].active;
+  renderAccounts(ui);
+  await saveToGitHub();
+}
+
+// ── 口座削除 ──────────────────────────────────
+async function deleteAccount(ui, ai) {
+  if (!confirm("削除しますか？")) return;
+  users[ui].accounts.splice(ai, 1);
+  renderAccounts(ui);
+  updateStats();
+  await saveToGitHub();
+}
+
+// ── フィールド更新 ────────────────────────────
+function updateField(ui, field, value) {
+  users[ui][field] = value;
+}
+
+// ── ユーザーON/OFF ────────────────────────────
+async function toggleActive(ui) {
+  users[ui].active = !users[ui].active;
+  renderUsers();
+  updateStats();
+  await saveToGitHub();
+}
+
+// ── ユーザー削除 ──────────────────────────────
+async function deleteUser(ui) {
+  if (!confirm(`${users[ui].name} を削除しますか？`)) return;
+  users.splice(ui, 1);
+  renderUsers();
+  updateStats();
+  await saveToGitHub();
+}
+
+// ── 変更保存 ──────────────────────────────────
+async function saveUser(ui) {
+  renderUsers();
+  updateStats();
+  await saveToGitHub();
+}
+
+// ── ライセンス更新 ────────────────────────────
+async function renewLicense(ui) {
+  const d = new Date(users[ui].expire ? users[ui].expire.replace(/\//g,"-") : new Date());
+  d.setMonth(d.getMonth() + 1);
+  users[ui].expire = d.toISOString().slice(0,10).replace(/-/g,"/");
+  renderUsers();
+  await saveToGitHub();
+}
+
+async function renewLicenseYear(ui) {
+  const d = new Date(users[ui].expire ? users[ui].expire.replace(/\//g,"-") : new Date());
+  d.setFullYear(d.getFullYear() + 1);
+  users[ui].expire = d.toISOString().slice(0,10).replace(/-/g,"/");
+  renderUsers();
+  await saveToGitHub();
+}
+
+// ── 統計更新 ──────────────────────────────────
 function updateStats() {
   const today   = new Date().toISOString().slice(0,10).replace(/-/g,"/");
-  const active  = licenses.filter(l => l.active && (!l.expire || l.expire >= today)).length;
-  const inactive = licenses.length - active;
-  document.getElementById("statTotal").textContent   = licenses.length;
-  document.getElementById("statActive").textContent  = active;
-  document.getElementById("statInactive").textContent = inactive;
+  const active  = users.filter(u => u.active && (!u.expire || u.expire >= today)).length;
+  const accts   = users.reduce((s,u) => s + (u.accounts ? u.accounts.length : 0), 0);
+  document.getElementById("sTotal").textContent    = users.length;
+  document.getElementById("sActive").textContent   = active;
+  document.getElementById("sInactive").textContent = users.length - active;
+  document.getElementById("sAccounts").textContent = accts;
 }
 
-// ── 有効/無効切替 ─────────────────────────────
-async function toggleLicense(i) {
-  licenses[i].active = !licenses[i].active;
-  renderTable();
-  updateStats();
-  await saveToGitHub();
-}
-
-// ── 削除 ──────────────────────────────────────
-async function deleteLicense(i) {
-  if (!confirm(`${licenses[i].key} を削除しますか？`)) return;
-  licenses.splice(i, 1);
-  renderTable();
-  updateStats();
-  await saveToGitHub();
-}
-
-// ── GitHubから読み込み ────────────────────────
+// ── GitHub読み込み ────────────────────────────
 async function loadFromGitHub() {
   const token = localStorage.getItem("hl_ghToken") || "";
   showStatus("LOADING...", true);
@@ -541,12 +672,10 @@ async function loadFromGitHub() {
       { headers: { Authorization: `token ${token}`, Accept: "application/vnd.github.v3+json" } }
     );
     if (res.status === 404) {
-      fileSHA  = "";
-      licenses = [];
-      renderTable();
-      updateStats();
-      showStatus("NEW REPO - ADD FIRST LICENSE", true);
-      document.getElementById("headerStatus").textContent = `REPO: ${GH_USER}/${GH_REPO}`;
+      fileSHA = ""; users = [];
+      renderUsers(); updateStats();
+      showStatus("NEW REPO - ADD FIRST USER", true);
+      document.getElementById("hInfo").textContent = `${GH_USER}/${GH_REPO}`;
       return;
     }
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -556,29 +685,26 @@ async function loadFromGitHub() {
     const bytes  = new Uint8Array(binary.length);
     for(let i=0;i<binary.length;i++) bytes[i]=binary.charCodeAt(i);
     const json   = JSON.parse(new TextDecoder("utf-8").decode(bytes));
-    licenses     = json.licenses || [];
-    renderTable();
-    updateStats();
-    showStatus(`LOADED ${licenses.length} LICENSES`, true);
-    document.getElementById("headerStatus").textContent = `REPO: ${GH_USER}/${GH_REPO} | ${new Date().toLocaleTimeString()}`;
+    users        = json.users || [];
+    renderUsers(); updateStats();
+    showStatus(`LOADED ${users.length} USERS`, true);
+    document.getElementById("hInfo").textContent = `${GH_USER}/${GH_REPO} | ${new Date().toLocaleTimeString()}`;
   } catch(e) {
     showStatus("LOAD ERROR: " + e.message, false);
   }
 }
 
-// ── GitHubに保存 ──────────────────────────────
+// ── GitHub保存 ────────────────────────────────
 async function saveToGitHub() {
   const token   = localStorage.getItem("hl_ghToken") || "";
-  const jsonStr = JSON.stringify({ licenses }, null, 2);
+  const jsonStr = JSON.stringify({ users }, null, 2);
   const bytes   = new TextEncoder().encode(jsonStr);
   let   binary  = "";
   bytes.forEach(b => binary += String.fromCharCode(b));
   const content = btoa(binary);
-
   try {
     const body = { message: `hedgeluck auth update ${new Date().toISOString()}`, content, branch: "main" };
     if (fileSHA) body.sha = fileSHA;
-
     const res = await fetch(
       `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`,
       {
@@ -604,8 +730,8 @@ function showStatus(msg, ok) {
 
 // ── 初期値 ────────────────────────────────────
 const d = new Date();
-d.setFullYear(d.getFullYear() + 1);
-document.getElementById("newExpire").value = d.toISOString().slice(0,10);
+d.setMonth(d.getMonth() + 1);
+document.getElementById("nExpire").value = d.toISOString().slice(0,10);
 generateKey();
 </script>
 </body>
